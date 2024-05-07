@@ -159,17 +159,45 @@ router.get("/search", isLoggedIn, async function (req, res) {
   res.render("search", { footer: true, user });
 });
 
-router.get('/saved', isLoggedIn, async function(req, res) {
+router.get('/save', isLoggedIn, async function(req, res) {
   try {
+    // Find the user using their username stored in the session
     const user = await userModel.findOne({ username: req.session.passport.user }).populate("saved");
-    const savedPosts = user.saved; 
-    console.log("Saved posts:", savedPosts); 
-    res.render('saved', { footer: true, savedPosts });
+    // Render the 'save' template with the user data
+    res.render('save', { user: user });
   } catch (error) {
+    // Handle any errors
     console.error("Error:", error);
     res.status(500).send('Internal Server Error');
   }
 });
+
+router.get('/save/:id', isLoggedIn, async function(req, res) {
+  try {
+    const user = await userModel.findOne({ username: req.session.passport.user }).populate("saved");
+    const postId = req.params.id;
+    const savedPost = await postModel.findById(postId);
+    if (!savedPost) {
+      return res.status(404).json({ error: 'Post not found' });
+    }
+    const alreadySavedIndex = user.saved.findIndex(saved => saved._id.toString() === postId);
+
+    if (alreadySavedIndex !== -1) {
+      user.saved.splice(alreadySavedIndex, 1);
+    } else {
+      user.saved.push(savedPost);
+    }
+
+    await user.save();
+
+    res.json({ success: true });
+  } catch (error) {
+    
+    console.error("Error:", error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 router.get("/search/:user", isLoggedIn, async function (req, res) {
   const searchTerm = `^${req.params.user}`;

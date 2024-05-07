@@ -58,10 +58,13 @@
             position: fixed;
             top: 90%;
             padding: 2vw;
-            width: 100vw;
+            width: 50vw;
             display: flex;
             align-items: center;
             gap: 30px;
+        }
+        #bottom h1{
+            font-size: 3vw;
         }
         input {
             padding: 2vw 3vw;
@@ -75,6 +78,9 @@
            text-decoration: none;
             color: #fff;
 
+        }
+        #username h1{
+            font-size: 8vw;
         }
         .comment {
             display: flex;
@@ -94,6 +100,7 @@
         .comment p {
             margin: 0;
         }
+        
     </style>
 </head>
 <body>
@@ -133,7 +140,7 @@
                 document.getElementById('bottom').style.display = 'flex'; 
             }
         });
-
+    
         function appendComment(username, commentText, picture) {
             const commentHtml = `
             <div class="comment">
@@ -141,7 +148,7 @@
                     <img src="${picture}" alt="Profile Picture">
                 </div>
                 <div class="comment-content">
-                    <h1>${username}</h1>
+                    <h1 style="font-size: 5vw;">${username}</h1> <!-- Adjusted font size here -->
                     <p>${commentText}</p>
                 </div>
             </div>
@@ -154,5 +161,6 @@
             }
         }
     </script>
+    
 </body>
 </html>
